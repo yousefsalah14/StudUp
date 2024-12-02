@@ -3,6 +3,8 @@
 @tailwind utilities;
 /* You can add global styles to this file, and also import other style files */
 @import url('https://fonts.googleapis.com/css2?family=Encode+Sans+Expanded:wght@300&display=swap');
+@import '@fortawesome/fontawesome-free/css/all.min.css';
+
 
 
 :root {
@@ -70,6 +72,18 @@ a:hover {
 .bg-main-light {
     background-color: var(--light-color) !important;
 }
-nav{
-    margin-bottom: 200px;
-}
+.loading-icon {
+    color: white;
+    font-size: 2rem;
+    animation: animate 2s infinite;
+  }
+  
+  @keyframes animate {
+    0% {
+      transform: rotate(0deg);
+    }
+    100% {
+      transform: rotate(720deg);
+    }
+  }
+  
