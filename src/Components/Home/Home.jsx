@@ -1,5 +1,6 @@
 import Features from "../Features/Features.jsx"
 import Sponser from "../Sponser/Sponser.jsx"
+import Subscribe from "../Subscribe/Subscribe.jsx"
 
 const stats = [
     { name: ' Organizations', value: '100+' },
@@ -60,6 +61,8 @@ function Home() {
     </div>
     <Sponser />
     <Features />
+
+    <Subscribe />
     </>
     )
 }

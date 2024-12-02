@@ -29,7 +29,7 @@ function logOut (){
             {userData &&
             <>
             <Link to="/" className="hover:text-gray-300">Home</Link>
-            <Link to="/activities" className="hover:text-gray-300">Student Activities</Link>
+            <Link to="/student-activities" className="hover:text-gray-300">Student Activities</Link>
             <Link to="/events" className="hover:text-gray-300">Events</Link>
             <Link to="/opportunities" className="hover:text-gray-300">Opportunities</Link>
             <Link to="/profile" className="hover:text-gray-300">Profile</Link> 

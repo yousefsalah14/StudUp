@@ -9,6 +9,8 @@ import Profile from './Components/Profile/Profile.jsx';
 import NotFound from './Components/NotFound/NotFound.jsx';
 import UserContextProvider from './Context/UserContext.jsx';
 import ProtectedRoute from './Components/ProtectedRoute/ProtectedRoute.jsx';
+import StudentActivityHome from './StudentActivityHome/StudentActivityHome.jsx';
+import Events from './Components/Events/Events.jsx';
 let routes = createBrowserRouter([
   {
     path: '', 
@@ -18,6 +20,8 @@ let routes = createBrowserRouter([
       { path: 'register', element: <Register />  },
       { path: 'login', element:<Login />  },
       { path: 'profile', element: <ProtectedRoute><Profile /></ProtectedRoute> },
+      { path: 'student-activities', element: <ProtectedRoute><StudentActivityHome /></ProtectedRoute> },
+      { path: 'events', element: <ProtectedRoute><Events /></ProtectedRoute> },
       { path: '*', element: <ProtectedRoute><NotFound /></ProtectedRoute> }, 
     ],
   },
