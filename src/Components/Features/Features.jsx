@@ -45,11 +45,14 @@ export default function Features() {
         {/* Features Section */}
         <div className="mt-16 grid grid-cols-1 gap-y-12 sm:grid-cols-2 sm:gap-x-8 lg:grid-cols-2 lg:gap-y-16">
           {features.map((feature) => (
-            <div key={feature.name} className="relative">
-              <div className="absolute flex items-center justify-center h-12 w-12 rounded-lg bg-indigo-600 text-white">
-                <feature.icon className="h-6 w-6" aria-hidden="true" />
+            <div
+              key={feature.name}
+              className="relative bg-gray-800 p-6 rounded-lg shadow-lg transition-transform transform hover:-translate-y-2 hover:shadow-xl"
+            >
+              <div className="absolute -top-6 left-6 flex items-center justify-center h-16 w-16 rounded-full bg-indigo-600 text-white">
+                <feature.icon className="h-8 w-8" aria-hidden="true" />
               </div>
-              <div className="ml-16">
+              <div className="ml-20 mt-4">
                 <h3 className="text-lg font-bold text-white">{feature.name}</h3>
                 <p className="mt-2 text-base text-gray-300">{feature.description}</p>
               </div>

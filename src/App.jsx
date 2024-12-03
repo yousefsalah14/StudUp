@@ -11,6 +11,7 @@ import UserContextProvider from './Context/UserContext.jsx';
 import ProtectedRoute from './Components/ProtectedRoute/ProtectedRoute.jsx';
 import StudentActivityHome from './StudentActivityHome/StudentActivityHome.jsx';
 import Events from './Components/Events/Events.jsx';
+import StudentActivityDetails from './Components/StudentActivityDetails/StudentActivityDetails.jsx';
 let routes = createBrowserRouter([
   {
     path: '', 
@@ -21,6 +22,7 @@ let routes = createBrowserRouter([
       { path: 'login', element:<Login />  },
       { path: 'profile', element: <ProtectedRoute><Profile /></ProtectedRoute> },
       { path: 'student-activities', element: <ProtectedRoute><StudentActivityHome /></ProtectedRoute> },
+      { path: 'studentactivity/:id', element: <ProtectedRoute><StudentActivityDetails /></ProtectedRoute> },
       { path: 'events', element: <ProtectedRoute><Events /></ProtectedRoute> },
       { path: '*', element: <ProtectedRoute><NotFound /></ProtectedRoute> }, 
     ],
