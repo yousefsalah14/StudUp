@@ -1,54 +1,58 @@
+import axios from 'axios';
 import React, { useState, useEffect } from 'react';
 
-const events = [
-  {
-    id: 1,
-    name: 'AI & Machine Learning Workshop',
-    description: 'Learn the fundamentals of AI and machine learning with hands-on projects.',
-    startDate: '2024-12-10',
-    endDate: '2024-12-12',
-    location: 'Building A, Room 101',
-    category: 'Workshop',
-    applied: false,
-    status: 'Upcoming',
-  },
-  {
-    id: 2,
-    name: 'Web Development Bootcamp',
-    description: 'Intensive bootcamp to build responsive websites and applications.',
-    startDate: '2024-12-15',
-    endDate: '2024-12-17',
-    location: 'Building B, Room 205',
-    category: 'Bootcamp',
-    applied: false,
-    status: 'Upcoming',
-  },
-  {
-    id: 3,
-    name: 'Data Science Symposium',
-    description: 'Join industry experts to discuss the latest trends in data science.',
-    startDate: '2024-12-20',
-    endDate: '2024-12-20',
-    location: 'Main Auditorium',
-    category: 'Seminar',
-    applied: false,
-    status: 'Upcoming',
-  },
-  {
-    id: 4,
-    name: 'Cybersecurity Awareness Seminar',
-    description: 'Learn how to secure your online presence and protect against cyber threats.',
-    startDate: '2024-12-25',
-    endDate: '2024-12-25',
-    location: 'Building C, Room 301',
-    category: 'Seminar',
-    applied: false,
-    status: 'Upcoming',
-  },
-];
+// const events = [
+//   {
+//     id: 1,
+//     name: 'AI & Machine Learning Workshop',
+//     description: 'Learn the fundamentals of AI and machine learning with hands-on projects.',
+//     startDate: '2024-12-10',
+//     endDate: '2024-12-12',
+//     location: 'Building A, Room 101',
+//     category: 'Workshop',
+//     applied: false,
+//     status: 'Upcoming',
+//   },
+//   {
+//     id: 2,
+//     name: 'Web Development Bootcamp',
+//     description: 'Intensive bootcamp to build responsive websites and applications.',
+//     startDate: '2024-12-15',
+//     endDate: '2024-12-17',
+//     location: 'Building B, Room 205',
+//     category: 'Bootcamp',
+//     applied: false,
+//     status: 'Upcoming',
+//   },
+//   {
+//     id: 3,
+//     name: 'Data Science Symposium',
+//     description: 'Join industry experts to discuss the latest trends in data science.',
+//     startDate: '2024-12-20',
+//     endDate: '2024-12-20',
+//     location: 'Main Auditorium',
+//     category: 'Seminar',
+//     applied: false,
+//     status: 'Upcoming',
+//   },
+//   {
+//     id: 4,
+//     name: 'Cybersecurity Awareness Seminar',
+//     description: 'Learn how to secure your online presence and protect against cyber threats.',
+//     startDate: '2024-12-25',
+//     endDate: '2024-12-25',
+//     location: 'Building C, Room 301',
+//     category: 'Seminar',
+//     applied: false,
+//     status: 'Upcoming',
+//   },
+// ];
+const { data } = await axios.get(
+          "https://studgov1.runasp.net/api/Events/all",
+        );
 
 function Events() {
-  const [eventList, setEventList] = useState(events);
+  const [eventList, setEventList] = useState(data.data);
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('All');
   const [showModal, setShowModal] = useState(false);
@@ -143,7 +147,7 @@ function Events() {
     <div className="min-h-screen bg-gray-900 text-white flex flex-col items-center pt-8 px-4">
       {/* Header Section */}
       <div className="text-center max-w-4xl px-6 py-12">
-        <h1 className="text-4xl font-bold tracking-tight">Upcoming Events & Workshops</h1>
+        <h1 className="text-4xl font-bold tracking-tight">Upcoming Events </h1>
         <p className="mt-2 text-gray-400 text-sm">
           Explore events and workshops to expand your knowledge and skills!
         </p>
@@ -201,10 +205,16 @@ function Events() {
                     <span className="font-semibold">Date:</span> {event.startDate} - {event.endDate}
                   </p>
                   <p className="text-sm text-gray-400">
-                    <span className="font-semibold">Location:</span> {event.location}
+                    <span className="font-semibold">Location:</span> {event.city}
                   </p>
                   <p className="text-sm text-gray-400">
-                    <span className="font-semibold">Category:</span> {event.category}
+                    <span className="font-semibold">Location:</span> {event.governorate}
+                  </p>
+                  <p className="text-sm text-gray-400">
+                    <span className="font-semibold">Address:</span> {event.address}
+                  </p>
+                  <p className="text-sm text-gray-400">
+                    <span className="font-semibold">Seats:</span> {event.numberOfSeats}
                   </p>
                 </div>
               </div>
@@ -252,10 +262,13 @@ function Events() {
                 <span className="font-semibold">End Date:</span> {currentEvent.endDate}
               </p>
               <p>
-                <span className="font-semibold">Location:</span> {currentEvent.location}
+                <span className="font-semibold">Location:</span> {currentEvent.address}
               </p>
               <p>
-                <span className="font-semibold">Category:</span> {currentEvent.category}
+                <span className="font-semibold">City:</span> {currentEvent.governorate}
+              </p>
+              <p>
+                <span className="font-semibold">Seats:</span> {currentEvent.numberOfSeats}
               </p>
             </div>
             <button

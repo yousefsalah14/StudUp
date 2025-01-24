@@ -16,14 +16,14 @@ function Login() {
       
       try {
         setLoading(true)
-        let {data} = await axios.post('https://ecommerce.routemisr.com/api/v1/auth/signin', values)
-        localStorage.setItem('userToken',data.token)
+        let {data} = await axios.post('https://studgov1.runasp.net/api/Auth/Login', values)
+        localStorage.setItem('userToken','bearer '+ data.data.accessToken)
         console.log(data);
         navigate("/")
-        setUserData(data.token)
+        setUserData(data.data.accessToken)
         setLoading(false)
       } catch (error) {
-        setApiError(error.response.data.message)
+        setApiError(error.response.data.Message)
         setLoading(false)
       }
       

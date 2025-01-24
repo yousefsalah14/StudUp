@@ -1,6 +1,7 @@
 import { useContext, useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { UserContext } from '../../Context/UserContext.jsx';
+import Logo from '../../assets/student.png'
 
 const NavBar = () => {
   const { userData, setUserData } = useContext(UserContext);
@@ -49,7 +50,7 @@ const NavBar = () => {
         {/* Logo Section */}
         <div className="flex items-center space-x-3">
           <img
-            src="src/assets/student.png"
+            src={Logo}
             alt="Logo"
             className="w-10 h-10 rounded-full object-cover border-2 border-white"
           />
@@ -87,11 +88,11 @@ const NavBar = () => {
                 <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-gray-300 transition-all duration-300 group-hover:w-full"></span>
               </Link>
               <Link
-              to="/opportunities"
+              to="/workshops"
               className="relative group text-lg text-white py-2"
               onClick={() => setIsMenuOpen(false)}
             >
-              Opportunities
+              Workshops
               <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-gray-300 transition-all duration-300 group-hover:w-full"></span>
             </Link>
               <Link
@@ -183,11 +184,11 @@ const NavBar = () => {
               <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-gray-300 transition-all duration-300 group-hover:w-full"></span>
             </Link>
             <Link
-              to="/opportunities"
+              to="/workshops"
               className="relative group text-lg text-white py-2"
               onClick={() => setIsMenuOpen(false)}
             >
-              Opportunities
+              Workshops
               <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-gray-300 transition-all duration-300 group-hover:w-full"></span>
             </Link>
             <Link

@@ -11,9 +11,9 @@ function StudentActivityHome() {
   // Fetch student activities
   async function getStudentActivities() {
     try {
-      const { data } = await axios.get("http://localhost:3000/student-activity");
+      const { data } = await axios.get("https://studgov1.runasp.net/api/StudentActivity/all");
 
-      const studentActivities = data.StudentActivities || [];
+      const studentActivities = data.data || [];
       setOrganizations(studentActivities);
       setFilteredOrganizations(studentActivities);
     } catch (error) {
@@ -96,22 +96,22 @@ function StudentActivityHome() {
                 className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-y-4 sm:gap-y-0 py-4 px-6 bg-gray-800 rounded-lg hover:bg-gray-700"
               >
                 <Link
-                  to={`/studentactivity/${org._id}`}
+                  to={`/studentactivity/${org.id}`}
                   className="w-full flex items-center gap-x-4"
                 >
                   <img
                     alt={org.name}
-                    src={org.imageUrl || "https://via.placeholder.com/64"}
+                    src={org.pictureUrl || "https://via.placeholder.com/64"}
                     className="w-16 h-16 rounded-full"
                   />
                   <div className="flex flex-col">
                     <p className="text-lg font-semibold">{org.name}</p>
-                    <p className="text-sm text-gray-400">{org.email}</p>
+                    <p className="text-sm text-gray-400">{org.contactEmail}</p>
                     <p className="text-sm text-gray-400">
-                      Role: <span>{org.role}</span>
+                      Role: <span>{org.contactPhoneNumber}</span>
                     </p>
                     <p className="text-sm text-gray-400">
-                      Activities: <span>{org.activities}</span>
+                      City: <span>{org.city}</span>
                     </p>
                   </div>
                 </Link>
