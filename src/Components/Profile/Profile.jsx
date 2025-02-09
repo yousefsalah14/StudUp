@@ -1,91 +1,10 @@
-/* eslint-disable no-unused-vars */
-import { DocumentIcon, UserCircleIcon } from '@heroicons/react/24/solid'
-import { ChevronDownIcon } from '@heroicons/react/16/solid'
-import { useFormik } from "formik";
-import * as yup from "yup";
+
 
 import {jwtDecode} from "jwt-decode";
 import axios from "axios";
 import { useEffect } from 'react';
 export default function Profile() { 
-const token = localStorage.getItem('userToken')
 
-  const userInfo = token ? jwtDecode(token) : {}
-console.log(jwtDecode(token));
-
-
-  const formik = useFormik({
-    initialValues: {
-      UserName: userInfo?.UserName || "",
-      contactEmail:"",
-      firstName: "",
-      lastName: "",
-      city: "",
-      governorate: "",
-      university: "",
-      faculty: "",
-      field: "",
-      birthDate: "",
-      contactPhoneNumber: "",
-      cv: null, // For file upload
-    },
-    validationSchema: yup.object().shape({
-      UserName: yup.string().required("Username is required"),
-      contactEmail: yup.string().email("Invalid email").required("Email is required"),
-      firstName: yup.string().required("First name is required"),
-      lastName: yup.string().required("Last name is required"),
-      city: yup.string().required("City is required"),
-      governorate: yup.string().required("Governorate is required"),
-      university: yup.string().required("University is required"),
-      faculty: yup.string().required("Faculty is required"),
-      field: yup.string().required("Field is required"),
-      birthDate: yup.date().required("Birth date is required"),
-      contactPhoneNumber: yup
-        .string()
-        .matches(/^\d+$/, "Phone number must be numeric")
-        .required("Phone number is required"),
-    }),
-    onSubmit: async (values) => {
-      try {
-        const payload = { ...values, cv: undefined }; // Exclude file upload for now
-        await axios.put("https://studgov1.runasp.net/api/Student", payload,
-          {
-            headers: {
-              Authorization: `${token}`, 
-            },
-          });
-        alert("Profile updated successfully!");
-      } catch (error) {
-        console.error("Error updating profile", error);
-        alert("Failed to update profile");
-      }
-    },
-  });
-
-  useEffect(() => {
-    const fetchUserData = async () => {
-      try {
-        const response = await axios.get("https://studgov1.runasp.net/profile", {
-          headers: {
-            Authorization:`${token}`, // No Bearer prefix
-          },
-        });
-        console.log(response.data);
-  
-        // Uncomment the next line to update Formik values
-        formik.setValues((prevValues) => ({
-          ...prevValues,
-          ...response.data, // Update formik values with the fetched data
-        }));
-      } catch (error) {
-        console.error("Error fetching user data", error);
-        console.log(token);
-      }
-    };
-  
-    fetchUserData();
-  }, [token]);
-  
 
   return (
     <div className="flex min-h-full flex-1 flex-col justify-center px-6 py-12 lg:px-8 mt-8 ">

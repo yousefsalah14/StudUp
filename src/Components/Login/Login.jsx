@@ -3,106 +3,160 @@ import axios from "axios";
 import { useFormik } from "formik";
 import { useContext, useState } from "react";
 import { FiCommand } from "react-icons/fi";
-import { useNavigate } from "react-router-dom";
-import * as Yup from 'yup'
+import { Link, useNavigate } from "react-router-dom";
+import * as Yup from 'yup';
 import { UserContext } from "../../Context/UserContext.jsx";
+import AuthImagePattern from "../AuthImage/AuthImage.jsx";
+import { Eye, EyeOff, Loader2, Mail, Lock, MessageSquare, KeyRound } from "lucide-react";
+import LogImg from './../../../public/auth.png'
 
 function Login() {
-    const [apiError,setApiError]=useState(null)
-    const [loading,setLoading]=useState(false)
-    let {setUserData} = useContext(UserContext)
-    let navigate = useNavigate()
-     async function handleLogin(values) {
-      
-      try {
-        setLoading(true)
-        let {data} = await axios.post('https://studgov1.runasp.net/api/Auth/Login', values)
-        localStorage.setItem('userToken','bearer '+ data.data.accessToken)
-        console.log(data);
-        navigate("/")
-        setUserData(data.data.accessToken)
-        setLoading(false)
-      } catch (error) {
-        setApiError(error.response.data.Message)
-        setLoading(false)
-      }
-      
+    const [apiError, setApiError] = useState(null);
+    const [loading, setLoading] = useState(false);
+    const [showPassword, setShowPassword] = useState(false);
+    const { setUserData } = useContext(UserContext);
+    const navigate = useNavigate();
 
-    }
-    let validationSchema  = Yup.object().shape({
-      email : Yup.string().email("email invalid ").required("email is required"),
-      password : Yup.string().required("Password is required"),
-    })
-    let formik = useFormik({
-        initialValues:{
-            email:'',
-            password:''
-        }, validationSchema ,
+    const handleLogin = async (values) => {
+        try {
+            setLoading(true);
+            const { data } = await axios.post('https://studgov1.runasp.net/api/Auth/Login', values);
+            localStorage.setItem('userToken', 'bearer ' + data.data.accessToken);
+            setUserData(data.data.accessToken);
+            navigate("/");
+        } catch (error) {
+            setApiError(error.response?.data?.Message || "An error occurred");
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    const validationSchema = Yup.object().shape({
+        email: Yup.string().email("Invalid email").required("Email is required"),
+        password: Yup.string().required("Password is required"),
+    });
+
+    const formik = useFormik({
+        initialValues: {
+            email: '',
+            password: ''
+        },
+        validationSchema,
         onSubmit: handleLogin
-    })
-  return (
+    });
 
-    <div className="pt-8 mx-auto w-1/2 mt-11 ">
-        <h2 className="text-3xl font-semibold py-6 mt-8">Login Now !</h2>
-      <form onSubmit={formik.handleSubmit} className="">
-{  apiError &&    <div className="p-3 mb-4 text-sm text-red-800 rounded-xl bg-red-50 dark:text-red-400" role="alert">
-      {apiError}
-</div>}
-       
-        <div className="relative z-0 w-full mb-5 group">
-          <input
+    return (
+      <div className="h-screen grid lg:grid-cols-2 bg-gray-900">
+          {/* Left Side - Form */}
+          <div className="flex flex-col justify-center items-center p-6 sm:p-12">
+              <div className="w-full max-w-md space-y-8">
+                  {/* Logo */}
+                  <div className="text-center mb-8">
+                      <div className="flex flex-col items-center gap-2 group">
+                          <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center group-hover:bg-primary/20 transition-colors">
+                              <KeyRound  className="w-6 h-6 text-gray-300" />
+                          </div>
+                          <h1 className="text-2xl font-bold mt-2 text-gray-100">Welcome Back</h1>
+                          <p className="text-gray-300">Sign in to your account</p>
+                      </div>
+                  </div>
+  
+                  {/* Form */}
+                  <form onSubmit={formik.handleSubmit} className="space-y-6">
+                  <div className="form-control">
+    <label className="label">
+        <span className="label-text font-medium text-gray-100">Email</span>
+    </label>
+    <div className="relative">
+        {/* Email Icon - Centered Vertically */}
+        <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+            <Mail className="h-5 w-5 text-gray-400" />
+        </div>
+        <input
             type="email"
-            name="email"
-            id="email"
-            onChange={formik.handleChange}
-            onBlur={formik.handleBlur}
-            value={formik.values.email}
-            className="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-gray dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
-            placeholder=""
-          />
-          <label className="peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:start-0 rtl:peer-focus:translate-x-1/4 rtl:peer-focus:left-auto peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">
-            Email
-          </label>
-        </div>
-        {formik.errors.email && formik.touched.email &&<div className="p-3 mb-4 text-sm text-red-800 rounded-xl bg-red-50 dark:text-red-400" role="alert">
-      {formik.errors.email}
-</div>}
-        <div className="relative z-0 w-full mb-5 group">
-          <input
-            type="password"
-            name="password"
-            id="password"
-            onChange={formik.handleChange}
-            onBlur={formik.handleBlur}
-            value={formik.values.password}
-            className="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-gray dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
-            placeholder=""
-          />
-          <label className="peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:start-0 rtl:peer-focus:translate-x-1/4 rtl:peer-focus:left-auto peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">
-            Password
-          </label>
-        </div>
-        {formik.errors.password && formik.touched.password &&<div className="p-3 mb-4 text-sm text-red-800 rounded-xl bg-red-50 dark:text-red-400" role="alert">
-      {formik.errors.password}
-</div>}
-    
-{loading ?<button
-  type="button"
-  className="text-white bg-gray-900 hover:bg-gray-900 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg w-full sm:w-auto px-3 py-1.5 text-center dark:bg-gray-900 dark:hover:bg-blue-700 dark:focus:ring-gray-900"
->
-<FiCommand className="loading-icon" />
-</button> : <button
-          type="submit"
-          className="text-white bg-gray-900 hover:bg-gray-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-gray-900 dark:hover:bg-blue-700 dark:focus:ring-gray-900"
-        >
-          Submit
-        </button> }
-       
-        
-
-      </form>
+            className={`input input-bordered w-full  pl-10 bg-gray-800 text-gray-100  placeholder-gray-400 p-2 rounded-md ${
+                formik.errors.email && 'input-error'
+            }`}
+            placeholder="you@example.com"
+            {...formik.getFieldProps('email')}
+        />
+        {formik.errors.email && (
+            <span className="text-error text-sm text-red-400">{formik.errors.email}</span>
+        )}
     </div>
+</div>
 
+<div className="form-control">
+    <label className="label">
+        <span className="label-text font-medium text-gray-100">Password</span>
+    </label>
+    <div className="relative">
+        {/* Password Icon - Centered Vertically */}
+        <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+            <Lock className="h-5 w-5 text-gray-400" />
+        </div>
+        <input
+            type={showPassword ? "text" : "password"}
+            className={`input input-bordered w-full  pl-10 bg-gray-800 text-gray-100 sm placeholder-gray-400 p-2 rounded-md${
+                formik.errors.password && 'input-error'
+            }`}
+            placeholder="Enter your password"
+            {...formik.getFieldProps('password')}
+        />
+        {/* Toggle Password Visibility Button - Centered Vertically */}
+        <button
+            type="button"
+            className="absolute inset-y-0 right-0 pr-3 flex items-center"
+            onClick={() => setShowPassword(!showPassword)}
+        >
+            {showPassword ? (
+                <EyeOff className="h-5 w-5 text-gray-400" />
+            ) : (
+                <Eye className="h-5 w-5 text-gray-400" />
+            )}
+        </button>
+        {formik.errors.password && (
+            <span className="text-error text-sm text-red-400">{formik.errors.password}</span>
+        )}
+    </div>
+</div>
+  
+                      {apiError && <div className="text-error text-sm text-red-400">{apiError}</div>}
+  
+                      <button
+                          type="submit"
+                          className="btn btn-primary w-full bg-blue-600 hover:bg-blue-700 text-gray-100 p-2 rounded-md"
+                          disabled={loading}
+                      >
+                          {loading ? (
+                              <>
+                                  <Loader2 className="h-5 w-5 animate-spin" />
+                                  Loading...
+                              </>
+                          ) : (
+                              "Sign in"
+                          )}
+                      </button>
+                  </form>
+  
+                  <div className="text-center">
+                      <p className="text-gray-300">
+                          Don&apos;t have an account?{" "}
+                          <Link to="/register" className="link link-primary text-blue-400 hover:text-blue-500">
+                              Create account
+                          </Link>
+                      </p>
+                  </div>
+              </div>
+          </div>
+  
+          {/* Right Side - Image/Pattern */}
+          <AuthImagePattern
+              title={"Welcome back!"}
+              subtitle={"Sign in to continue your conversations and catch up with your messages."}
+              image={LogImg}
+          />
+      </div>
   );
 }
 

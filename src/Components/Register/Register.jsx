@@ -2,135 +2,221 @@
 import axios from "axios";
 import { useFormik } from "formik";
 import { useContext, useState } from "react";
-import { FiCommand } from "react-icons/fi";
-import { useNavigate } from "react-router-dom";
-import * as Yup from 'yup'
+import { Link, useNavigate } from "react-router-dom";
+import * as Yup from "yup";
 import { UserContext } from "../../Context/UserContext.jsx";
+import { Eye, EyeOff, Loader2, Mail, Lock, User , CalendarClock } from "lucide-react";
+import AuthImagePattern from "../AuthImage/AuthImage.jsx";
+import RegImg from "./../../../public/man-with-join-us-sign-for-open-recruitment.jpg"
 
 function Register() {
-    const [apiError,setApiError]=useState(null)
-    const [loading,setLoading]=useState(false)
-    let {setUserData}= useContext(UserContext)
-    let navigate = useNavigate()
-    async function handleRegister(values) {
+  const [apiError, setApiError] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
+  const [isStudentActivityRegister, setIsStudentActivityRegister] = useState(false);
+  const { setUserData } = useContext(UserContext);
+  const navigate = useNavigate();
+
+  const handleRegister = async (values) => {
+
       try {
         setLoading(true);
-        const { data } = await axios.post(
-          "https://studgov1.runasp.net/api/Auth/StudentRegister",
-          values
-        );
+        const endpoint = isStudentActivityRegister
+          ? "https://studgov1.runasp.net/api/Auth/StudentActivityRegister"
+          : "https://studgov1.runasp.net/api/Auth/StudentRegister";
     
-        // Redirect to home
+        const { data } = await axios.post(endpoint, values);
         navigate("/login");
       } catch (error) {
-        // Handle API errors
-        setApiError(error.response.data.errors[0]|| "An error occurred");
+        console.error("Registration error:", error);
+        setApiError(
+          error.response?.data?.errors?.[0] || 
+          error.response?.data?.Message || 
+          error.message || 
+          "An error occurred"
+        );
       } finally {
         setLoading(false);
       }
-    }
-    
-    // Validation Schema
-    let validationSchema = Yup.object().shape({
-      username: Yup.string()
-        .min(3, "Name Length Must Be Greater Than 3")
-        .required("Name is Required"),
-      email: Yup.string().email("Email is invalid").required("Email is Required"),
-      password: Yup.string().required("Password is Required"),
-    });
-    
-    // Formik Configuration
-    let formik = useFormik({
-      initialValues: {
-        username: "",
-        email: "",
-        password: ""
-      },
-      validationSchema,
-      onSubmit: handleRegister,
-    });
-    
-  return (
- 
-    <div className="pt-8 mx-auto w-1/2 mt-11">
-        <h2 className="text-3xl font-semibold py-6 mt-8">Register Now !</h2>
-      <form onSubmit={formik.handleSubmit} className="">
-{  apiError &&    <div className="p-3 mb-4 text-sm text-red-800 rounded-xl bg-red-50 dark:text-red-400" role="alert">
-      {apiError}
-</div>}
-        <div className="relative z-0 w-full mb-5 group">
-          <input
-            type="text"
-            name="username"
-            id="username"
-            onChange={formik.handleChange}
-            onBlur={formik.handleBlur}
-            value={formik.values.username}
-            className="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-gray dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
-            placeholder=""
-          />
-          <label className="peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:start-0 rtl:peer-focus:translate-x-1/4 rtl:peer-focus:left-auto peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">
-            UserName
-          </label>
-        </div>
-        {formik.errors.username && formik.touched.username &&<div className="p-3 mb-4 text-sm text-red-800 rounded-xl bg-red-50 dark:text-red-400" role="alert">
-      {formik.errors.username}
-</div>}
-        <div className="relative z-0 w-full mb-5 group">
-          <input
-            type="email"
-            name="email"
-            id="email"
-            onChange={formik.handleChange}
-            onBlur={formik.handleBlur}
-            value={formik.values.email}
-            className="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-gray dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
-            placeholder=""
-          />
-          <label className="peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:start-0 rtl:peer-focus:translate-x-1/4 rtl:peer-focus:left-auto peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">
-            Email
-          </label>
-        </div>
-        {formik.errors.email && formik.touched.email &&<div className="p-3 mb-4 text-sm text-red-800 rounded-xl bg-red-50 dark:text-red-400" role="alert">
-      {formik.errors.email}
-</div>}
-        <div className="relative z-0 w-full mb-5 group">
-          <input
-            type="password"
-            name="password"
-            id="password"
-            onChange={formik.handleChange}
-            onBlur={formik.handleBlur}
-            value={formik.values.password}
-            className="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-gray dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
-            placeholder=""
-          />
-          <label className="peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:start-0 rtl:peer-focus:translate-x-1/4 rtl:peer-focus:left-auto peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">
-            Password
-          </label>
-        </div>
-        {formik.errors.password && formik.touched.password &&<div className="p-3 mb-4 text-sm text-red-800 rounded-xl bg-red-50 dark:text-red-400" role="alert">
-      {formik.errors.password}
-</div>}
-        
-        
-{loading ?<button
-  type="button"
-  className="text-white bg-gray-900 hover:bg-gray-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg w-full sm:w-auto px-3 py-1.5 text-center dark:bg-gray-900 dark:hover:bg-blue-700 dark:focus:ring-gray-800"
->
-<FiCommand className="loading-icon" />
-</button> : <button
-          type="submit"
-          className="text-white bg-gray-900 hover:bg-gray-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-gray-600 dark:hover:bg-blue-700 dark:focus:ring-gray-800"
-        >
-          Submit
-        </button> }
-       
-        
+    };
 
-      </form>
+  const validationSchema = Yup.object().shape({
+    username: Yup.string().min(3, "Name must be at least 3 characters").required("Name is required"),
+    email: Yup.string().email("Invalid email").required("Email is required"),
+    password: Yup.string().required("Password is required")
+  });
+
+  const formik = useFormik({
+    initialValues: {
+      username: "",
+      email: "",
+      password: ""
+    },
+    validationSchema,
+    onSubmit: handleRegister,
+    validateOnMount: true, // Ensures the button is disabled initially if the form is invalid
+  });
+
+  return (
+    <div className="h-screen grid lg:grid-cols-2 bg-gray-900">
+      {/* Left Side - Form */}
+      <div className="flex flex-col justify-center items-center p-6 sm:p-12">
+        <div className="w-full max-w-md space-y-8">
+          {/* Logo */}
+          <div className="text-center mb-8">
+            <div className="flex flex-col items-center gap-2 group">
+              <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center group-hover:bg-primary/20 transition-colors">
+                
+              {isStudentActivityRegister ? <CalendarClock className="w-6 h-6 text-gray-300" /> :<User className="w-6 h-6 text-gray-300" /> }
+              </div>
+              <h1 className="text-2xl font-bold mt-2 text-gray-100">
+                {isStudentActivityRegister ? "Student Activity Register" : "Register Now!"}
+              </h1>
+              <p className="text-gray-300">
+                {isStudentActivityRegister
+                  ? "Register for student activities"
+                  : "Create your account to get started"}
+              </p>
+            </div>
+          </div>
+
+          {/* Toggle Button */}
+          <div className="flex space-x-2 bg-gray-800 p-1 rounded-lg w-full">
+            <button
+              type="button"
+              onClick={() => setIsStudentActivityRegister(false)}
+              className={`flex-1 px-4 py-2 text-sm font-medium rounded-lg transition-all ${
+                !isStudentActivityRegister ? "bg-gray-700 text-white" : "text-gray-300 hover:bg-gray-700"
+              }`}
+            >
+              Student Register
+            </button>
+            <button
+              type="button"
+              onClick={() => setIsStudentActivityRegister(true)}
+              className={`flex-1 px-4 py-2 text-sm font-medium rounded-lg transition-all ${
+                isStudentActivityRegister ? "bg-gray-700 text-white" : "text-gray-300 hover:bg-gray-700"
+              }`}
+            >
+              Student Activity Register
+            </button>
+          </div>
+
+{/* Form */}
+<form onSubmit={formik.handleSubmit} className="space-y-6">
+  {/* Username Field */}
+  <div className="form-control">
+    <label className="label text-gray-100 flex items-center gap-2">
+       {/* Font Awesome user icon */}
+      <span className="flex-1">Username</span>
+    </label>
+    <div className="relative">
+      <input
+        type="text"
+        name="username"
+        className={`input input-bordered w-full bg-gray-800 text-gray-100 placeholder-gray-400 pl-10 p-2 rounded-md${
+          formik.touched.username && formik.errors.username ? "input-error" : ""
+        }`}
+        placeholder="Enter your username"
+        {...formik.getFieldProps("username")}
+      />
+      <User className="fas fa-user absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"/> {/* Icon inside input */}
+    </div>
+    {formik.touched.username && formik.errors.username && (
+      <span className="text-error text-sm text-white">{formik.errors.username}</span>
+    )}
+  </div>
+
+  {/* Email Field */}
+  <div className="form-control">
+    <label className="label text-gray-100 flex items-center gap-2">
+      <i className="fas fa-envelope text-gray-400"></i> {/* Font Awesome envelope icon */}
+      <span className="flex-1">Email</span>
+    </label>
+    <div className="relative">
+      <input
+        type="email"
+        name="email"
+        className={`input input-bordered w-full bg-gray-800 text-gray-100 placeholder-gray-400 pl-10 p-2  rounded-md${
+          formik.touched.email && formik.errors.email ? "input-error" : ""
+        }`}
+        placeholder="you@example.com"
+        {...formik.getFieldProps("email")}
+      />
+      <Mail className="fas fa-envelope absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"/> {/* Icon inside input */}
+    </div>
+    {formik.touched.email && formik.errors.email && (
+      <span className="text-error text-sm text-white">{formik.errors.email}</span>
+    )}
+  </div>
+
+
+            {/* Password Field */}
+            <div className="form-control">
+      <label className="label text-gray-100">Password</label>
+      <div className="relative">
+        {/* Lock icon */}
+        <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+          <Lock className="w-5 h-5 text-gray-400" />
+        </div>
+        {/* Password input */}
+        <input
+          type={showPassword ? "text" : "password"}
+          name="password"
+          className={`input input-bordered w-full bg-gray-800 text-gray-100 placeholder-gray-400 pl-10 p-2  rounded-md ${
+            formik.touched.password && formik.errors.password ? "input-error" : ""
+          }`}
+          placeholder="Enter your password"
+          {...formik.getFieldProps("password")}
+        />
+        {/* Eye icon to toggle password visibility */}
+        <button
+          type="button"
+          className="absolute inset-y-0 right-0 flex items-center pr-3 cursor-pointer"
+          onClick={()=>{setShowPassword(!showPassword)}}
+        >
+          {showPassword ? (
+            <EyeOff className="w-5 h-5 text-gray-400" /> // Eye-off icon when password is visible
+          ) : (
+            <Eye className="w-5 h-5 text-gray-400" /> // Eye icon when password is hidden
+          )}
+        </button>
+      </div>
+      {/* Error message */}
+      {formik.touched.password && formik.errors.password && (
+        <span className="text-error text-sm text-white">{formik.errors.password}</span>
+      )}
     </div>
 
+            {/* API Error */}
+            {apiError && <div className="p-3 text-sm text-red-800 bg-red-50 rounded-xl">{apiError}</div>}
+
+            {/* Submit Button */}
+            <button
+              type="submit"
+              className="btn btn-primary w-full bg-blue-600 hover:bg-blue-700 text-gray-100 p-2 rounded-md"
+              disabled={loading || !formik.isValid || formik.isSubmitting}
+            >
+              {loading ? <Loader2 className="h-5 w-5 animate-spin" /> : "Register"}
+            </button>
+          </form>
+
+          {/* Login Link */}
+          <div className="text-center text-gray-300">
+            Already have an account?{" "}
+            <Link to="/login" className="text-blue-400 hover:text-blue-500">
+              Login
+            </Link>
+          </div>
+        </div>
+      </div>
+             {/* Right Side - Image/Pattern */}
+             <AuthImagePattern
+              title={"Welcome back!"}
+              subtitle={"Sign in to continue your conversations and catch up with your messages."}
+              image={RegImg}
+          />
+    </div>
   );
 }
 
