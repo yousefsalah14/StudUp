@@ -25,8 +25,12 @@ function Login() {
             setUserData(data.data.accessToken);
             navigate("/");
         } catch (error) {
-            setApiError(error.response?.data?.Message || "An error occurred");
-        } finally {
+            if (error.response?.data?.Errors && Array.isArray(error.response.data.Errors)) {
+              setApiError(error.response.data.Errors.join(", "));
+            } else {
+              setApiError(error.response?.data?.Message || "An error occurred");
+            }
+          }finally {
             setLoading(false);
         }
     };
@@ -121,7 +125,7 @@ function Login() {
     </div>
 </div>
   
-                      {apiError && <div className="text-error text-sm text-red-400">{apiError}</div>}
+{apiError && <div className="p-3 text-sm text-red-800 bg-red-50 rounded-xl">{apiError}</div>}
   
                       <button
                           type="submit"

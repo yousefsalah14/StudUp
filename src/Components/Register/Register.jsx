@@ -28,22 +28,34 @@ function Register() {
         const { data } = await axios.post(endpoint, values);
         navigate("/login");
       } catch (error) {
-        console.error("Registration error:", error);
-        setApiError(
-          error.response?.data?.errors?.[0] || 
-          error.response?.data?.Message || 
-          error.message || 
-          "An error occurred"
-        );
+        if (error.response?.data?.Errors && Array.isArray(error.response.data.Errors)) {
+          setApiError(error.response.data.Errors.join(", "));
+        } else {
+          setApiError(error.response?.data?.Message || "An error occurred");
+        }
       } finally {
         setLoading(false);
       }
     };
 
   const validationSchema = Yup.object().shape({
-    username: Yup.string().min(3, "Name must be at least 3 characters").required("Name is required"),
-    email: Yup.string().email("Invalid email").required("Email is required"),
-    password: Yup.string().required("Password is required")
+    username: Yup.string()
+    .matches(/^[a-zA-Z0-9_]+$/, "Username can only contain letters, numbers, and underscores")
+    .min(3, "Username must be at least 3 characters")
+    .max(30, "Username cannot exceed 30 characters")
+    .required("Username is required"),
+
+  email: Yup.string()
+    .email("Invalid email format")
+    .required("Email is required"),
+
+  password: Yup.string()
+    .min(8, "Password must be at least 8 characters")
+    .matches(/[a-z]/, "Password must contain at least one lowercase letter")
+    .matches(/[A-Z]/, "Password must contain at least one uppercase letter")
+    .matches(/[0-9]/, "Password must contain at least one number")
+    .matches(/[@$!%*?&]/, "Password must contain at least one special character (@$!%*?&)")
+    .required("Password is required"),
   });
 
   const formik = useFormik({
@@ -54,7 +66,7 @@ function Register() {
     },
     validationSchema,
     onSubmit: handleRegister,
-    validateOnMount: true, // Ensures the button is disabled initially if the form is invalid
+    // validateOnMount: true, // Ensures the button is disabled initially if the form is invalid
   });
 
   return (
@@ -193,11 +205,12 @@ function Register() {
 
             {/* Submit Button */}
             <button
-              type="submit"
-              className="btn btn-primary w-full bg-blue-600 hover:bg-blue-700 text-gray-100 p-2 rounded-md"
-              disabled={loading || !formik.isValid || formik.isSubmitting}
-            >
-              {loading ? <Loader2 className="h-5 w-5 animate-spin" /> : "Register"}
+                type="submit"
+                className="btn btn-primary w-full bg-blue-600 hover:bg-blue-700 text-gray-100 p-2 rounded-md"
+                disabled={loading || !formik.isValid || formik.isSubmitting}
+                onClick={() => formik.setTouched({ username: true, email: true, password: true })}
+              >
+                {loading ? <Loader2 className="h-5 w-5 animate-spin" /> : "Register"}
             </button>
           </form>
 
