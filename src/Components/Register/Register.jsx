@@ -69,6 +69,7 @@ function Register() {
     // validateOnMount: true, // Ensures the button is disabled initially if the form is invalid
   });
 
+
   return (
     <div className="h-screen grid lg:grid-cols-2 bg-gray-900">
       {/* Left Side - Form */}

@@ -18,13 +18,14 @@ let routes = createBrowserRouter([
     element: <Layout />,
     children: [
       { index: true, element: <ProtectedRoute><Home /></ProtectedRoute> }, 
-      { path: 'register', element: <Register />  },
-      { path: 'login', element:<Login />  },
-      { path: 'profile', element: <ProtectedRoute><Profile /></ProtectedRoute> },
+    
+      { path: 'profile', element: <ProtectedRoute ><Profile /></ProtectedRoute> },
       { path: 'student-activities', element: <ProtectedRoute><StudentActivityHome /></ProtectedRoute> },
       { path: 'studentactivity/:id', element: <ProtectedRoute><StudentActivityDetails /></ProtectedRoute> },
       { path: 'events', element: <ProtectedRoute><Events /></ProtectedRoute> },
       { path: '*', element: <ProtectedRoute><NotFound /></ProtectedRoute> }, 
+      { path: 'register', element: <Register />  },
+      { path: 'login', element:<Login />  },
     ],
   },
 ]);
